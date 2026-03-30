@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+Biometric Authentication
+{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+  <h1>Biometric Authentication</h1>
+  <img src="static/fingerprints-FB-1.jpg" alt="Fingerprint Image" width="200">
+  <p id="analysisMessage">We are trying to analyze your fingerprints. Please wait.</p>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Simulate fingerprint analysis time
+  setTimeout(function() {
+    document.getElementById("analysisMessage").textContent = "Fingerprint analysis completed.";
+  }, 3000); // Simulate a 3-second analysis time
+});
+</script>
+{% endblock %}

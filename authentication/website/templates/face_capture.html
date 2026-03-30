@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Biometric Authentication{% endblock %}
+{% block content %}
+  <h1>Camera Capture</h1>
+  <div style="position: relative;">
+    <video id="cameraFeed" autoplay style="max-width: 100%;"></video>
+    <form id="captureForm" method="post" enctype="multipart/form-data">
+      <input type="hidden" id="imageDataInput" name="imageData">
+      <button id="captureButton" type="button" style="position: absolute; bottom: 10px; left: 30%; transform: translateX(-50%); background-color: red; border: none; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer;">Click</button>
+    </form>
+  </div>
+  <img id="capturedImage" alt="Captured Image" style="display: none;">
+  <script>
+    const cameraFeed = document.getElementById('cameraFeed');
+    const captureButton = document.getElementById('captureButton');
+    const capturedImage = document.getElementById('capturedImage');
+    const imageDataInput = document.getElementById('imageDataInput');
+    const captureForm = document.getElementById('captureForm');
+
+    // Access the camera stream
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        cameraFeed.srcObject = stream;
+      })
+      .catch(error => {
+        console.error('Error accessing camera:', error);
+      });
+
+    // Capture a photo from the camera feed
+    captureButton.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = cameraFeed.videoWidth;
+      canvas.height = cameraFeed.videoHeight;
+      context.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+
+      // Convert canvas to a data URL and display the captured image
+      const imageDataURL = canvas.toDataURL('image/jpeg');
+      capturedImage.src = imageDataURL;
+      capturedImage.style.display = 'block';
+
+      // Set the captured image data in the hidden input field
+      imageDataInput.value = imageDataURL;
+
+      // Submit the form to the Flask backend
+      captureForm.submit();
+    });
+  </script>
+{% endblock %}

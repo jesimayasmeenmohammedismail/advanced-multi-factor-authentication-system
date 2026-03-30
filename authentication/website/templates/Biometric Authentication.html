@@ -1,0 +1,15 @@
+{% extends "base.html" %} {%block title%}Biometric Authentication{%endblock%}
+{%block content%}
+
+<body>
+<h1>Biometric Authentication</h1>
+<form action="/add_finger_print" method="POST">
+    <button type="submit">Add Fingerprint</button>
+</form>
+<form action="/face_capture" method="POST">
+    <button type="submit">Face Recognition</button>
+</form>
+</body>
+
+
+{% endblock %}

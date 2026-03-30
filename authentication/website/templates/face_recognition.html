@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Biometric Authentication{% endblock %}
+{% block content %}
+<h1>Biometric Authentication</h1>
+<div style="position: relative;">
+  <video id="cameraFeed" autoplay style="max-width: 100%;"></video>
+  <form id="captureForm" method="post" enctype="multipart/form-data" action="/face_rec">
+    <input type="hidden" id="imageDataInput" name="imageData">
+  </form>
+</div>
+<script>
+  const cameraFeed = document.getElementById('cameraFeed');
+  const imageDataInput = document.getElementById('imageDataInput');
+  const captureForm = document.getElementById('captureForm');
+  const captureInterval = 5000; // 5 seconds in milliseconds
+
+  // Access the camera stream
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      cameraFeed.srcObject = stream;
+    })
+    .catch(error => {
+      console.error('Error accessing camera:', error);
+    });
+
+  // Capture a photo from the camera feed and submit to the backend
+  function captureAndSubmitPhoto() {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = cameraFeed.videoWidth;
+    canvas.height = cameraFeed.videoHeight;
+    context.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+
+    // Convert canvas to a data URL and set it as the input value
+    const imageDataURL = canvas.toDataURL('image/jpeg');
+    imageDataInput.value = imageDataURL;
+
+    // Submit the form to the backend
+    captureForm.submit();
+  }
+
+  // Capture photo automatically at the specified interval
+  setInterval(() => {
+    captureAndSubmitPhoto();
+  }, captureInterval);
+</script>
+{% endblock %}
